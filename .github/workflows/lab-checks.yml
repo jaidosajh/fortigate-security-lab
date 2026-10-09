@@ -1,0 +1,24 @@
+name: Lab checks
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  offline-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.10', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Unit tests
+        run: python -m unittest discover -s tests -v
+      - name: Audit clean HQ policies
+        run: python tools/policy_audit.py configs/hq-policies.conf --fail-on-findings
+      - name: Triage synthetic logs
+        run: python tools/log_triage.py samples/traffic.log --threshold 3

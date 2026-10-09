@@ -1,0 +1,67 @@
+# Template: replace __LOCAL_PSK__ locally on BOTH peers before use.
+config vpn ipsec phase1-interface
+    edit "to-hq"
+        set interface "port1"
+        set ike-version 2
+        set peertype any
+        set proposal aes256-sha256
+        set dhgrp 14
+        set remote-gw 192.0.2.10
+        set psksecret "__LOCAL_PSK__"
+    next
+end
+config vpn ipsec phase2-interface
+    edit "to-hq-p2"
+        set phase1name "to-hq"
+        set proposal aes256-sha256
+        set pfs enable
+        set dhgrp 14
+        set src-subnet 10.20.10.0 255.255.255.0
+        set dst-subnet 10.10.20.0 255.255.255.0
+    next
+end
+config router static
+    edit 20
+        set dst 10.10.20.0 255.255.255.0
+        set device "to-hq"
+    next
+end
+config firewall address
+    edit "BRANCH_NET"
+        set subnet 10.20.10.0 255.255.255.0
+    next
+    edit "LAB_WEB"
+        set subnet 10.10.20.10 255.255.255.255
+    next
+end
+config firewall service custom
+    edit "LAB_HTTPS"
+        set tcp-portrange 443
+    next
+end
+config firewall policy
+    edit 50
+        set name "branch-to-hq-web"
+        set srcintf "port2"
+        set dstintf "to-hq"
+        set srcaddr "BRANCH_NET"
+        set dstaddr "LAB_WEB"
+        set action accept
+        set schedule "always"
+        set service "LAB_HTTPS"
+        set logtraffic all
+        set nat disable
+    next
+    edit 90
+        set name "log-default-deny"
+        set srcintf "any"
+        set dstintf "any"
+        set srcaddr "all"
+        set dstaddr "all"
+        set action deny
+        set schedule "always"
+        set service "ALL"
+        set logtraffic all
+        set nat disable
+    next
+end

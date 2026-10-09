@@ -1,0 +1,7 @@
+# SYNTHETIC DATA; no real incident evidence.
+date=2026-01-15 time=12:00:01 type=traffic subtype=forward srcip=10.10.30.10 dstip=10.10.20.10 dstport=445 policyid=10 action=deny msg="guest blocked"
+date=2026-01-15 time=12:00:02 type=traffic subtype=forward srcip=10.10.30.10 dstip=10.10.20.10 dstport=3389 policyid=10 action=deny
+date=2026-01-15 time=12:00:03 type=traffic subtype=forward srcip=10.10.30.10 dstip=10.10.99.10 dstport=22 policyid=10 action=deny
+date=2026-01-15 time=12:00:04 type=traffic subtype=forward srcip=10.10.10.10 dstip=10.10.20.10 dstport=443 policyid=20 action=close
+date=2026-01-15 time=12:00:05 type=traffic subtype=forward srcip=10.20.10.10 dstip=10.10.20.10 dstport=443 policyid=50 action=accept
+date=2026-01-15 time=12:00:06 type=traffic subtype=forward srcip=10.10.10.11 dstip=10.10.20.10 dstport=445 policyid=90 action=deny
